@@ -6,9 +6,17 @@
  * 2026-07-13
  */
 
+// Sirve para hacer el triángulo
 import * as twgl from 'twgl-base.js';
 
 // Vertex Shader as a string
+// Es el código del vertex shader escrito en GLSL, parecido a la sintaxis de C
+// Tiene cosas adicionales como tipos de dato
+// Las variables vec4 son de x, y, z y w en posición. Si es de color es R, G, B, A.
+// in es de input
+// Esas variables que recibe el vertex shader son atributos de lo que voy a dibujar.
+// Daré como resultado un vec4 con un color, el cual es v de varying.
+// gl_position es una variable que ya existe y siempre se debe llenar
 const vsGLSL = `#version 300 es
 in vec4 a_position;
 in vec4 a_color;
@@ -22,6 +30,10 @@ void main() {
 `;
 
 // Fragment Shader as a string
+// Empieza igual con la versión y se define con variables float para tener mejor resolución de colores.
+// Recibo el v_color del programa anterior y el resultado será un color.
+// Solo hace que el color de salida sea el mismo que le llegó.
+// El v_color son todos los colores que varían según la posición del pixel según la interpolación hecha por el rasterizer.
 const fsGLSL = `#version 300 es
 precision highp float;
 
@@ -31,10 +43,15 @@ out vec4 outColor;
 
 void main() {
     outColor = v_color;
-    //outColor = vec4(1, 0, 1, 1);
+    //outColor = vec4(0, 0, 255, 0.6);
 }
 `;
 
+// getContext dibuja
+// twgl y createProgramInfo recibe el contexto gl y un arreglo de los shaders.
+// generateData genera la figura
+// Creo buffers donde cargo la info del objeto y creo un vertex array object (representación del objeto en WebGL)
+// Elijo ese objeto, el programa a usar y dibujo, es lo que hace el pipeline
 function main_twgl(): void {
     const canvas = document.querySelector('canvas');
     if (!canvas) {
@@ -70,11 +87,12 @@ function generateData(): twgl.Arrays {
     const arrays: twgl.Arrays = {
         a_position: {
             // Two components for the coordinates in X and Y
+            // El origen esta en el centro del triángulo y las coordenadas son de los vértices.
             numComponents: 2,
             data: new Float32Array([
-                 0.0,   0.7,
-                 0.5,  -0.7,
-                -0.5,  -0.7,
+                 0.0,   0.9,
+                 0.5,  -0.9,
+                -0.5,  -0.9,
             ]),
         },
         a_color: {
@@ -89,10 +107,11 @@ function generateData(): twgl.Arrays {
             ]
             */
             // To pass integer values, the type must be specified
+            // 255 es completamente opaco
             data: new Uint8Array([
-                255, 0, 0, 255,
-                0, 255, 0, 255,
-                0, 0, 255, 255,
+                255, 0, 255, 100,
+                255, 255, 0, 255,
+                0, 255, 255, 255,
             ]),
         },
     };

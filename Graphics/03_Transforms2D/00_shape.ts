@@ -12,6 +12,7 @@ import * as twgl from 'twgl-base.js'
 import { shapeF } from '../libs/shapes.js'
 
 // Import the shaders from external files
+// Importa lo del archivo pero como un string y shaders
 import vsGLSL from './vs_00_no_transform.glsl?raw';
 import fsGLSL from './fs_flat_color.glsl?raw';
 
@@ -37,6 +38,8 @@ function main() : void {
 }
 
 // Function to do the actual display of the objects
+// Recibe los datos, configura el canvas y su tamaño.
+// Crea uniforms para la resolución. Uniform es el mismo color para todos los vértices.
 function drawScene(
     gl: WebGL2RenderingContext,
     vao: WebGLVertexArrayObject,

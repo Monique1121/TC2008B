@@ -11,6 +11,7 @@
 
 import * as twgl from 'twgl-base.js'
 import { shapeF } from '../libs/shapes.js'
+// Importo para matrices homogéneas
 import { V2, M3 } from '../libs/2d-lib.js';
 
 // Import the shaders from external files
@@ -50,6 +51,7 @@ function drawScene(
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
     // Variable to define the translation of the object
+    // Definimos el tipo de datos vector 2 dado que en typescript no hay de este tipo, a diferencia de webGL.
     const translation = V2.create(240, 150);
     // Variables for the rotation angle
     const angleDegrees = 30;
@@ -62,6 +64,7 @@ function drawScene(
     const rotateMatrix = M3.rotation(angleRadians);
     const scaleMatrix = M3.scale(scale);
 
+    // Combina las matrices con la matriz identidad.
     let transforms = M3.identity();
     transforms = M3.multiply(scaleMatrix, transforms);
     transforms = M3.multiply(rotateMatrix, transforms);
@@ -70,7 +73,7 @@ function drawScene(
     let uniforms =
     {
         u_resolution: [gl.canvas.width, gl.canvas.height],
-        u_transforms: transforms,
+        u_transforms: translateMatrix,
         u_color: [Math.random(), Math.random(), Math.random(), 1],
     }
     console.log("UNIFORMS:");

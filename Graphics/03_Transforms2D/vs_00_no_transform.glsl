@@ -3,6 +3,8 @@ in vec2 a_position;
 
 uniform vec2 u_resolution;
 
+// Transformación del view
+
 vec4 projection2D(vec2 position, vec2 resolution) {
     // Convert the position from pixels to 0.0 - 1.0
     vec2 zeroToOne = position / resolution;

@@ -12,6 +12,8 @@
 import * as twgl from 'twgl-base.js';
 
 // Vertex Shader as a string
+// El tamaño del espacio es de 1 a -1
+// El 0, 0 en clipspace está en el centro
 const vsGLSL = `#version 300 es
 in vec4 a_position;
 in vec4 a_color;
@@ -51,7 +53,7 @@ function main(): void {
     const programInfo = twgl.createProgramInfo(gl, [vsGLSL, fsGLSL]);
 
     const sides = 6;
-    const arrays = generateData(sides);
+    const arrays = generateData(sides); // Crea las coordenadas y les asigna colores
     const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
     const vao = twgl.createVAOFromBufferInfo(gl, programInfo, bufferInfo);
     console.log(vao);
@@ -64,6 +66,7 @@ function main(): void {
 }
 
 // Create the data for the vertices of the polygon, as an object with two arrays
+// El generateData genera más triángulitos
 function generateData(sides: number): twgl.Arrays {
     // The arrays are initially empty
     const positionData: number[] = [];
@@ -71,14 +74,14 @@ function generateData(sides: number): twgl.Arrays {
     const indexData: number[] = [];
 
     // Initialize the center vertex, at the origin and with white color
+    positionData.push(0);   // Coordenadas del centro
     positionData.push(0);
-    positionData.push(0);
-    colorData.push(1);
+    colorData.push(1);      // Inserta el color blanco para ese vértice
     colorData.push(1);
     colorData.push(1);
     colorData.push(1);
 
-    const angleStep = 2 * Math.PI / sides;
+    const angleStep = 2 * Math.PI / sides;  // Ángulo entre cada triángulo
 
     // Loop over the sides to create the rest of the vertices
     for (let s = 0; s < sides; s++) {
@@ -91,14 +94,14 @@ function generateData(sides: number): twgl.Arrays {
         positionData.push(y);
 
         // Generate a random color for the vertex
-        colorData.push(Math.random());
-        colorData.push(Math.random());
-        colorData.push(Math.random());
-        colorData.push(1);
+        colorData.push(Math.random());  // R
+        colorData.push(Math.random());  // G
+        colorData.push(Math.random());  // B
+        colorData.push(1);  // Opaco si es más cercano a uno
 
         // Define the triangles, in counter clockwise order
         indexData.push(0);
-        indexData.push(s + 1);
+        indexData.push(s + 1);  // S es = a cero
         indexData.push(((s + 2) <= sides) ? (s + 2) : 1);
     }
 

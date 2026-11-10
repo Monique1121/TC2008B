@@ -11,6 +11,8 @@
 import * as twgl from 'twgl-base.js';
 
 // Vertex Shader as a string
+// Uniform es para que a todos los vértices se les aplique la misma resolución
+// gl_Position siempre tiene que ser un vector 4.
 const vsGLSL = `#version 300 es
 in vec2 a_position;
 in vec4 a_color;

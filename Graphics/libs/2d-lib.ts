@@ -57,25 +57,31 @@ export class M3 {
     // transformation matrix
 
     static translation(v: Vec2): Mat3 {
+        let tx = v[X];
+        let ty = v[Y];
         return [
             1,  0,  0,
             0,  1,  0,
-            0,  0,  1,
+            tx,  ty,  1,
         ];
     }
 
     static rotation(angleRadians: number): Mat3 {
+        const cos = Math.cos(angleRadians);
+        const sin = Math.sin(angleRadians);
         return [
-            1,  0,  0,
-            0,  1,  0,
+            cos,  -sin,  0,
+            sin,  cos,  0,
             0,  0,  1,
         ];
     }
 
     static scale(v: Vec2): Mat3 {
+        let sx = v[X];
+        let sy = v[Y];
         return [
-            1,  0,  0,
-            0,  1,  0,
+            sx,  0,  0,
+            0,  sy,  0,
             0,  0,  1,
         ];
     }

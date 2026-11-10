@@ -22,6 +22,7 @@ vec4 projection2D(vec2 position, vec2 resolution) {
 
 void main() {
     // Create a vector 3 with the point coordinates and 1, to multiply
+    // Se aplican las transformaciones en el shader
     vec2 position = (u_transforms * vec3(a_position, 1)).xy;
 
     gl_Position = projection2D(position, u_resolution);
