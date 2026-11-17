@@ -8,6 +8,7 @@
  * 2026-07-16
  */
 
+// Importa color y otras clases-
 import * as twgl from 'twgl-base.js';
 import { type Color } from './color';
 import { Object3D } from './object3d';
@@ -26,7 +27,7 @@ export abstract class Scene {
 
     private oldTime: number = 0;
 
-
+    // Reacomoda los tamaños y reacomoda el programa.
     constructor( gl: WebGL2RenderingContext, vsGLSL: string, fsGLSL: string) {
         this.gl = gl;
 
@@ -63,6 +64,7 @@ export abstract class Scene {
     /*
      * Subclasses must implement the concrete display method.
      */
+    // Cada subclase de esto, implementa qué debe dibujar.
     protected abstract render(deltaTime: number): void;
 
 

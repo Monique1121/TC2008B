@@ -73,7 +73,7 @@ function drawScene(
     let uniforms =
     {
         u_resolution: [gl.canvas.width, gl.canvas.height],
-        u_transforms: translateMatrix,
+        u_transforms: transforms,
         u_color: [Math.random(), Math.random(), Math.random(), 1],
     }
     console.log("UNIFORMS:");

@@ -10,6 +10,7 @@
 
 'use strict';
 
+// Se importan clases nuevas
 import * as twgl from 'twgl-base.js';
 import GUI from 'lil-gui';
 import { shapeF_centered, diamond } from '../libs/shapes.js';
@@ -26,6 +27,7 @@ import fsGLSL from './fs_flat_color.glsl?raw';
  * Subclass of Scene with the particular objects and settings for this example.
  * Specifies the objects that will be used, and the UI operations available.
  */
+// Clase que extiende una clase Scene
 class RotationScene extends Scene {
 //class RotationScene extends Scene<'model' | 'pivot'> {
     constructor(gl: WebGL2RenderingContext) {

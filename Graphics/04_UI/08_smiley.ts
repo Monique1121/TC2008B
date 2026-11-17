@@ -24,7 +24,10 @@ import fsGLSL from './fs_vertex_color.glsl?raw';
  * Specifies the objects that will be used, and the UI operations available.
  */
 class RotationScene extends Scene {
-    constructor(gl: WebGL2RenderingContext) {
+
+    Order: string = 'scale -> translation -> rotation'; 
+
+        constructor(gl: WebGL2RenderingContext) {
         super(gl, vsGLSL, fsGLSL);
 
         // Create the objects for this scene
@@ -37,6 +40,7 @@ class RotationScene extends Scene {
             [ 0.6, 0.6, 0.6, 1]);
         pivot.transforms.t.x = gl.canvas.width / 2;
         pivot.transforms.t.y = gl.canvas.height / 2;
+
     }
 
     // Method to draw the scene.
@@ -58,15 +62,51 @@ class RotationScene extends Scene {
 
         // Transform matrices for the model
         // TODO: Create the matrices necessary
-
-
+        
+        // Scale: changes the size of the face in X and Y
+        const scaleMatrixSmiley: Mat3 = M3.scale(v2_scale);
+        // Translation: moves the face to its position on the canvas
+        const translateMatrixSmiley: Mat3 = M3.translation(v2_trans);
+        // Rotation around the pivot (always 3 steps)
+        const translatef: Mat3 = M3.translation(v2_pivot_to_center);
+        const rotationMatrixSmiley: Mat3 = M3.rotation(model.transforms.rr.z);
+        const translateb: Mat3 = M3.translation(v2_center_to_pivot);
 
         // Create a composite transform matrix
         let modelTransforms: Mat3 = M3.identity();
         // TODO: Multiply the matrices in the correct order to obtain the required results
 
-
-
+        if (this.Order === 'scale -> rotation -> translation') {
+            modelTransforms = M3.multiply(scaleMatrixSmiley, modelTransforms);
+            modelTransforms = M3.multiply(translatef, modelTransforms);
+            modelTransforms = M3.multiply(rotationMatrixSmiley, modelTransforms);
+            modelTransforms = M3.multiply(translateb, modelTransforms);
+            modelTransforms = M3.multiply(translateMatrixSmiley, modelTransforms);
+        } else if (this.Order === 'scale -> translation -> rotation') {
+            modelTransforms = M3.multiply(scaleMatrixSmiley, modelTransforms);
+            modelTransforms = M3.multiply(translateMatrixSmiley, modelTransforms);
+            modelTransforms = M3.multiply(translatef, modelTransforms);
+            modelTransforms = M3.multiply(rotationMatrixSmiley, modelTransforms);
+            modelTransforms = M3.multiply(translateb, modelTransforms);
+        } else if (this.Order === 'translation -> scale -> rotation') {
+            modelTransforms = M3.multiply(translateMatrixSmiley, modelTransforms);
+            modelTransforms = M3.multiply(scaleMatrixSmiley, modelTransforms);
+            modelTransforms = M3.multiply(translatef, modelTransforms);
+            modelTransforms = M3.multiply(rotationMatrixSmiley, modelTransforms);
+            modelTransforms = M3.multiply(translateb, modelTransforms);
+        } else if (this.Order === 'rotation -> translation -> scale') {
+            modelTransforms = M3.multiply(translatef, modelTransforms);
+            modelTransforms = M3.multiply(rotationMatrixSmiley, modelTransforms);
+            modelTransforms = M3.multiply(translateb, modelTransforms);
+            modelTransforms = M3.multiply(translateMatrixSmiley, modelTransforms);
+            modelTransforms = M3.multiply(scaleMatrixSmiley, modelTransforms);
+        } else if (this.Order === 'rotation -> scale -> translation') {
+            modelTransforms = M3.multiply(translatef, modelTransforms);
+            modelTransforms = M3.multiply(rotationMatrixSmiley, modelTransforms);
+            modelTransforms = M3.multiply(translateb, modelTransforms);
+            modelTransforms = M3.multiply(scaleMatrixSmiley, modelTransforms);
+            modelTransforms = M3.multiply(translateMatrixSmiley, modelTransforms);
+        }
 
         gl.useProgram(programInfo.program);
 
@@ -102,6 +142,9 @@ class RotationScene extends Scene {
         const pivot = this.getObject('pivot');
 
         const gui = new GUI();
+
+        gui.add(this, 'Order', ['scale -> rotation -> translation', 'scale -> translation -> rotation',
+            'translation -> scale -> rotation', 'rotation -> translation -> scale', 'rotation -> scale -> translation']);
 
         const modelFolder = gui.addFolder('Model');
 

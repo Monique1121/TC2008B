@@ -95,29 +95,141 @@ function smiley(radius: number) : twgl.Arrays {
     // HINT: You can use polar coordinates to define the positions of vertices,
     // using the radius and an angle. Then convert them to polar coordinates.
 
-    // Sample data for a single yellow triangle. Replace with your values.
-    positionData.push(0, 100);
-    positionData.push(-120, -100);
-    positionData.push(120, -100);
-    colorData.push(0.9, 0.8, 0, 1);
-    colorData.push(0.9, 0.8, 0, 1);
-    colorData.push(0.9, 0.8, 0, 1);
+    // Number of triangles used for each circle
+    const sides = 64;
 
-    indexData.push(0, 2, 1);
+    // FACE: yellow circle centered at (0, 0)
+    // Initialize the center vertex, at the origin and with white color
+    positionData.push(0);   // Coordenadas del centro
+    positionData.push(0);
+    colorData.push(1);
+    colorData.push(0.85);
+    colorData.push(0.1);
+    colorData.push(1);
+
+    const angleStep = 2 * Math.PI / sides;  // Ángulo entre cada triángulo
+
+    // Loop over the sides to create the rest of the vertices
+    for (let s = 0; s < sides; s++) {
+        const angle = angleStep * s;
+
+        // Generate the coordinates of the vertex
+        const x = radius * Math.cos(angle);
+        const y = radius * Math.sin(angle);
+        positionData.push(x);
+        positionData.push(y);
+
+        // Generate a random color for the vertex
+        colorData.push(1, 0.85, 0.1, 1);  // Opaco si es más cercano a uno
+
+        // Define the triangles, in counter clockwise order
+        indexData.push(0);
+        indexData.push(s + 1);  // S es = a cero
+        indexData.push(((s + 2) <= sides) ? (s + 2) : 1);
+    }
+
+    // LEFT EYE: small black circle
+    const lefteyeX = radius * - 0.5;
+    const lefteyeY =  radius * 0.2;
+    const eyeR =  radius * 0.15;
+    let start = positionData.length / 2; 
+
+    positionData.push(lefteyeX);
+    positionData.push(lefteyeY);
+    colorData.push(0.1, 0.1, 0.1, 1);
+
+        // Loop over the sides to create the rest of the vertices
+    for (let s = 0; s < sides; s++) {
+        const angle = angleStep * s;
+
+        // Generate the coordinates of the vertex
+        const x = lefteyeX + eyeR* Math.cos(angle);
+        const y = lefteyeY + eyeR * Math.sin(angle);
+        positionData.push(x);
+        positionData.push(y);
+
+        // Generate a random color for the vertex
+        colorData.push(0.1, 0.1, 0.1, 1);  // Opaco si es más cercano a uno
+
+        // Define the triangles, in counter clockwise order
+        indexData.push(start);
+        indexData.push(start + s + 1);  // S es = a cero
+        indexData.push(start + (((s + 2) <= sides) ? (s + 2) : 1));
+    }
+
+    // RIGHT EYE: small black circle
+    const righteyeX = radius * 0.5;
+    const righteyeY =  radius * 0.2;
+    start = positionData.length / 2;
+
+    positionData.push(righteyeX);
+    positionData.push(righteyeY);
+    colorData.push(0.1, 0.1, 0.1, 1);
+
+        // Loop over the sides to create the rest of the vertices
+    for (let s = 0; s < sides; s++) {
+        const angle = angleStep * s;
+
+        // Generate the coordinates of the vertex
+        const x = righteyeX + eyeR * Math.cos(angle);
+        const y = righteyeY + eyeR * Math.sin(angle);
+        positionData.push(x);
+        positionData.push(y);
+
+        // Generate a random color for the vertex
+        colorData.push(0.1, 0.1, 0.1, 1);  // Opaco si es más cercano a uno
+
+        // Define the triangles, in counter clockwise order
+        indexData.push(start);
+        indexData.push(start + s + 1);  // S es = a cero
+        indexData.push(start + (((s + 2) <= sides) ? (s + 2) : 1));
+
+    }
+
+    // MOUTH: black half circle (smile)
+    const mouthY =  radius * - 0.3;
+    const mouthR = radius * 0.4
+    start = positionData.length / 2;
+
+    positionData.push(0);
+    positionData.push(mouthY);
+    colorData.push(0.1, 0.1, 0.1, 1);
+
+    // Loop over the sides to create the rest of the vertices
+    // Only half a turn: from 180° (PI) to 360° (2 * PI), the lower half.
+    for (let s = 0; s <= sides / 2; s++) {
+        const angle = Math.PI + angleStep * s;
+
+        // Generate the coordinates of the vertex
+        const x = mouthR * Math.cos(angle);
+        const y = mouthY + mouthR * Math.sin(angle);
+        positionData.push(x);
+        positionData.push(y);
+
+        // Generate a random color for the vertex
+        colorData.push(0.1, 0.1, 0.1, 1);  // Opaco si es más cercano a uno
+
+        // There is one less triangle than border vertices, and the half circle
+        // is not closed, so no triangle is created on the last iteration.
+        if (s < sides / 2) {
+            indexData.push(start);
+            indexData.push(start + s + 1);
+            indexData.push(start + s + 2);
+        }
+
+    }
 
 
-
-
-
-    // Build the final object with the arrays for positions, colors, and indices
     const arrays: twgl.Arrays = {
+        // Two components for each position in 2D
         a_position: { numComponents: 2, data: positionData },
-        a_color:    { numComponents: 4, data: colorData },
-        indices:    { numComponents: 3, data: indexData },
+        // Four components for a color (RGBA)
+        a_color: { numComponents: 4, data: colorData },
+        // Three components for each triangle, the 3 vertices
+        indices: { numComponents: 3, data: indexData },
     };
 
     console.log(arrays);
-
     return arrays;
 }
 

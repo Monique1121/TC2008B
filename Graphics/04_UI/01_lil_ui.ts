@@ -68,6 +68,7 @@ let arrays : twgl.Arrays = undefined;
 let vao : WebGLVertexArrayObject;
 
 // Variable with the data for the object transforms, controlled by the UI
+// Este objeto tiene objetos adentro con atributos como x y y, rotación, etc.
 const object = {
     // Translation
     t: {
@@ -153,14 +154,19 @@ function drawScene(gl: WebGL2RenderingContext): void {
     //twgl.drawBufferInfo(gl, bufferInfo, gl.LINE_STRIP);
     twgl.drawBufferInfo(gl, bufferInfo);
 
+    // Para actualizar y ver los cambios continuamente.
     requestAnimationFrame(() => drawScene(gl));
 }
 
+// Qué parámetros voy a modificar
 function setupUI(gl : WebGLRenderingContext): void {
     // Create the UI elements for each value
     const gui = new GUI();
 
     const traFolder = gui.addFolder('Translation');
+    // Indico objeto y nombre, del atributo que quiero modificar.
+    // Rango para posicón en x: 0 al ancho del canvas.
+    // Para que no se salga es canvas.width menos el ancho del objeto.
     traFolder.add( object.t, 'x', 0, gl.canvas.width)
         .onChange( (value : number) => {
             object.t.x = value;

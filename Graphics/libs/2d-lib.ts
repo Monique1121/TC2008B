@@ -41,6 +41,22 @@ export class V2 {
     //      returns the multiplication of each element of the vector by the scalar
     //      inside the 3rd Vec2
 
+    static subtract(u: Vec2, v: Vec2, dest?: Vec2): Vec2 {
+        dest = dest || new Float32Array(2);
+        dest[X] = u[X] - v[X];
+        dest[Y] = u[Y] - v[Y];
+        return dest;
+    }
+
+    static scale(u: Vec2, scalar: number, dest?: Vec2): Vec2 {
+        dest = dest || new Float32Array(2);
+        dest[X] = u[X] * scalar;
+        dest[Y] = u[Y] * scalar;
+        return dest;
+    }
+
+
+
 }
 
 // 3x3 matrices used for 2D transformations
@@ -70,8 +86,8 @@ export class M3 {
         const cos = Math.cos(angleRadians);
         const sin = Math.sin(angleRadians);
         return [
-            cos,  -sin,  0,
-            sin,  cos,  0,
+            cos,  sin,  0,
+            -sin,  cos,  0,
             0,  0,  1,
         ];
     }
@@ -119,9 +135,10 @@ export class M3 {
         // must be adjusted accordingly
 
         return [
-            1,  0,  0,
-            0,  1,  0,
-            0,  0,  1,
+            a00 * b00 + a10 * b01 + a20 * b02,  a01 * b00 + a11 * b01 + a21 * b02,  a02 * b00 + a12 * b01 + a22 * b02,
+            a00 * b10 + a10 * b11 + a20 * b12,  a01 * b10 + a11 * b11 + a21 * b12,  a02 * b10 + a12 * b11 + a22 * b12,
+            a00 * b20 + a10 * b21 + a20 * b22,  a01 * b20 + a11 * b21 + a21 * b22,  a02 * b20 + a12 * b21 + a22 * b22
+
         ];
     }
 
